@@ -6,10 +6,10 @@ from app.database import engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
 
-router = APIRouter(prefix="/users", tags=["User"])
+router = APIRouter(tags=["User"])
 
 
-@router.get("/{id}", response_model=schemas.SendUser)
+@router.get("/users/{id}", response_model=schemas.SendUser)
 def get_user(id: int, db: Session = Depends(get_db)):
     my_user = db.query(models.Author).filter(models.Author.id == id).first()
     if my_user:

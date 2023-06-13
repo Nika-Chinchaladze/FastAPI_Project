@@ -1,10 +1,17 @@
 from pydantic import BaseModel, EmailStr
+from datetime import datetime
 from typing import Optional
 
 
 # Token Data Pydantic Model
 class TokenData(BaseModel):
-    author_id: Optional[str] = None
+    id: Optional[str] = None
+
+
+# User Token Pydantic Model
+class UserToken(BaseModel):
+    access_token: str
+    token_type: str
 
 
 # User Pydantic Models
@@ -19,6 +26,35 @@ class GetUser(BaseUser):
 
 class SendUser(BaseUser):
     id: int
+
+    class Config:
+        orm_mode = True
+
+
+# Post related pydantic models
+class BasePost(BaseModel):
+    title: str
+    description: str
+    price: float
+    is_active: bool = True
+
+
+class GetPost(BasePost):
+    pass
+
+
+class SendPost(BasePost):
+    created_at: datetime
+    updated_at: datetime
+    author: SendUser
+
+    class Config:
+        orm_mode = True
+
+
+class PostOut(BaseModel):
+    Post: SendPost
+    votes: int
 
     class Config:
         orm_mode = True

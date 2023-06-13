@@ -31,10 +31,10 @@ def verify_access_token(user_token: str, credential_exception):
         decoded_jwt = jwt.decode(
             token=user_token, key=SECRET_KEY, algorithms=[ALGORITHM]
         )
-        author_id: str = decoded_jwt.get("author_id")
-        if author_id is None:
+        id: str = decoded_jwt.get("author_id")
+        if id is None:
             raise credential_exception
-        token_data = schemas.TokenData(author_id=author_id)
+        token_data = schemas.TokenData(id=id)
         return token_data
     except JOSEError:
         raise credential_exception
@@ -48,8 +48,8 @@ def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    user = verify_access_token(user_token, credential_exception)
+    author = verify_access_token(user_token, credential_exception)
     current_user = (
-        db.query(models.Author).filter(models.Author.id == int(user.author_id)).first()
+        db.query(models.Author).filter(models.Author.id == int(author.id)).first()
     )
-    return current_user
+    return current_user.id
