@@ -17,6 +17,7 @@ class Author(Base):
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
     posts = relationship("Post", back_populates="author")
+    comments = relationship("Comment", back_populates="author")
 
 
 class Post(Base):
@@ -42,6 +43,7 @@ class Post(Base):
 class Comment(Base):
     __tablename__ = "comments"
 
+    id = Column(Integer, primary_key=True, nullable=False)
     comment = Column(String, nullable=False)
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
@@ -49,12 +51,11 @@ class Comment(Base):
     post_id = Column(
         Integer,
         ForeignKey("posts.id", ondelete="CASCADE"),
-        primary_key=True,
         nullable=False,
     )
     author_id = Column(
         Integer,
         ForeignKey("authors.id", ondelete="CASCADE"),
-        primary_key=True,
         nullable=False,
     )
+    author = relationship("Author", back_populates="comments")

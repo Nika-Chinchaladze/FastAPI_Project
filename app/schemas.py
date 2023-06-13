@@ -58,3 +58,20 @@ class PostOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+# Comment pydantic models
+class BaseComment(BaseModel):
+    comment: str
+
+
+class GetComment(BaseComment):
+    pass
+
+
+class SendComment(BaseComment):
+    created_at: datetime
+    author: SendUser
+
+    class Config:
+        orm_mode = True
