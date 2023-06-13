@@ -1,3 +1,5 @@
+"""Module is responsible for launching server in development local area."""
+
 from fastapi import FastAPI
 
 from app.routers import user, authentication, post, comment

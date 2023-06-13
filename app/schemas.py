@@ -1,20 +1,22 @@
+"""Module is responsible for creating pydantic models."""
+
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
 
 
-# Token Data Pydantic Model
+# Token data related pydantic model.
 class TokenData(BaseModel):
     id: Optional[str] = None
 
 
-# User Token Pydantic Model
+# User token related pydantic model.
 class UserToken(BaseModel):
     access_token: str
     token_type: str
 
 
-# User Pydantic Models
+# User related pydantic models.
 class BaseUser(BaseModel):
     username: str
     email: EmailStr
@@ -31,7 +33,7 @@ class SendUser(BaseUser):
         orm_mode = True
 
 
-# Post related pydantic models
+# Post related pydantic models.
 class BasePost(BaseModel):
     title: str
     description: str
@@ -60,12 +62,13 @@ class PostOut(BaseModel):
         orm_mode = True
 
 
-# Comment pydantic models
+# Comment related pydantic models.
 class BaseComment(BaseModel):
     comment: str
 
 
 class GetComment(BaseComment):
+    id: int
     pass
 
 

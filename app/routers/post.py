@@ -1,5 +1,7 @@
+"""Module is responsible for post related CRUD operation."""
+
 from fastapi import status, HTTPException, Depends, APIRouter
-from typing import List, Optional
+from typing import List
 
 from sqlalchemy.orm import Session
 from app import models, schemas, oauth2
@@ -14,17 +16,11 @@ router = APIRouter(prefix="/posts", tags=["Post"])
 def all_post(
     db: Session = Depends(get_db),
     current_user_id: object = Depends(oauth2.get_current_user),
-    limit: Optional[int] = 4,
-    skip: Optional[int] = 0,
-    search: Optional[str] = "",
 ):
-    my_posts = (
-        db.query(models.Post)
-        .filter(models.Post.title.contains(search))
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+    """all_post view is responsible for retrieving all posts from database,
+    user must be logged in to execute this operation.
+    """
+    my_posts = db.query(models.Post).all()
     return my_posts
 
 
@@ -34,7 +30,14 @@ def one_post(
     db: Session = Depends(get_db),
     current_user_id: int = Depends(oauth2.get_current_user),
 ):
+    """one_post view is responsible for retrieving
+    information about one specific post.
+    user must be logged in to execute this operation.
+    """
     my_post = db.query(models.Post).filter(models.Post.id == id).first()
+    # we check if chosen post exists, if not exists
+    # we raise 404 error, but if exists then we return
+    # desired information.
     if my_post is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -49,6 +52,9 @@ def create_post(
     db: Session = Depends(get_db),
     current_user_id: int = Depends(oauth2.get_current_user),
 ):
+    """create_post module is responsible for creating new posts,
+    user must be logged in to execute this operation.
+    """
     my_post = models.Post(author_id=current_user_id, **new_post.dict())
     db.add(my_post)
     db.commit()
@@ -62,18 +68,27 @@ def delete_post(
     db: Session = Depends(get_db),
     current_user_id: int = Depends(oauth2.get_current_user),
 ):
+    """delete_post view is responsible for deleting chosen post
+    from database, user must be logged in to execute this operation.
+    """
     my_post = db.query(models.Post).filter(models.Post.id == id).first()
+    # we check if chosen post exists in the database.
     if my_post:
+        # we check if chosen post belongs to current user.
         if my_post.author_id == current_user_id:
             db.delete(my_post)
             db.commit()
             return my_post
         else:
+            # if chosen post doesn't belong to current user, then
+            # he/she won't be able to delete it, because we raise
+            # 403 error.
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not authorized to perform requested action!",
             )
     else:
+        # if chosen post not exists, then we will raise 404 error.
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"post with id: {id}, was not found!",
@@ -87,20 +102,29 @@ def put_post(
     db: Session = Depends(get_db),
     current_user_id: int = Depends(oauth2.get_current_user),
 ):
+    """put_post view is responsible for updating existing post
+    in the database, user must be logged in to execute this operation.
+    """
     my_query = db.query(models.Post).filter(models.Post.id == id)
     my_post = my_query.first()
+    # we check if chosen post exists in the database.
     if my_post:
+        # we check if chosen post belongs to current user.
         if my_post.author_id == current_user_id:
             my_query.update(update_post.dict(), synchronize_session=False)
             db.commit()
             db.refresh(my_post)
             return my_post
         else:
+            # if chosen post doesn't belong to current user, then we will
+            # raise 403 error and he/she won't be able to modify it.
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not authorized to perform requested action!",
             )
     else:
+        # if chosen post not exists in the database, then we will
+        # raise 404 error.
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"post with id: {id}, was not found!",

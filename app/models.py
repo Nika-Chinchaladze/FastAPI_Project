@@ -1,3 +1,5 @@
+"""Module is responsible for creating relational database tables."""
+
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import TIMESTAMP
