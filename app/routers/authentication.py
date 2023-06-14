@@ -4,7 +4,7 @@ from fastapi import status, HTTPException, Depends, APIRouter
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
 from sqlalchemy.orm import Session
-from app import models, schemas, utils, oauth2
+from app import models, schemas, utils, oauth2, crud
 from app.database import engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
@@ -90,3 +90,23 @@ def register(author_credentials: schemas.GetUser, db: Session = Depends(get_db))
             status_code=status.HTTP_208_ALREADY_REPORTED,
             detail=f"User with name {my_author.username} - already exists!",
         )
+
+
+@router.get("/logout", status_code=status.HTTP_200_OK)
+def logout(
+    user_token: str = Depends(oauth2.oauth_schema),
+    db: Session = Depends(get_db),
+    current_user_id: int = Depends(oauth2.get_current_user),
+):
+    """logout view is responsible for logging out users,
+    user must be logged in to access this endpoint, and
+    after executing logout view, user token will be added
+    into black list, so user needs to generate another token
+    to access some login_required data, also logout view cleans
+    database from old tokens.
+    """
+    # we check database and remove old black list tokens.
+    crud.remove_old_black_tokens(db)
+    # we add logged-out user's token into blacklist table.
+    if crud.save_in_black_list(user_token=user_token, user_id=current_user_id, db=db):
+        return {"message": "You have been logged out successfully!"}

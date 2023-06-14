@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
+from datetime import datetime, timedelta
 
 from .database import Base
 
@@ -61,3 +62,14 @@ class Comment(Base):
         nullable=False,
     )
     author = relationship("Author", back_populates="comments")
+
+
+class BlackList(Base):
+    __tablename__ = "blacklist"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    token = Column(String, unique=True, nullable=False)
+    user_id = Column(Integer, nullable=False)
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )

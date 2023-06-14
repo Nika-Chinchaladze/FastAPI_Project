@@ -32,6 +32,7 @@ def create_access_token(data: dict):
 def verify_access_token(user_token: str, credential_exception):
     """function verifies if token used by user is valid."""
     try:
+        # we verify if token is valid
         decoded_jwt = jwt.decode(
             token=user_token, key=SECRET_KEY, algorithms=[ALGORITHM]
         )
@@ -55,8 +56,17 @@ def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    author = verify_access_token(user_token, credential_exception)
-    current_user = (
-        db.query(models.Author).filter(models.Author.id == int(author.id)).first()
+    # we check if provided token is in black_list.
+    check_token = (
+        db.query(models.BlackList).filter(models.BlackList.token == user_token).first()
     )
-    return current_user.id
+    # If provided token is not in black list,
+    # Then we try, to verify it.
+    if check_token is None:
+        author = verify_access_token(user_token, credential_exception)
+        current_user = (
+            db.query(models.Author).filter(models.Author.id == int(author.id)).first()
+        )
+        return current_user.id
+    else:
+        raise credential_exception

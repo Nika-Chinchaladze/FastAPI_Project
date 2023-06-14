@@ -78,3 +78,15 @@ class SendComment(BaseComment):
 
     class Config:
         orm_mode = True
+
+
+# User logout related pydantic model
+class UserLogout(BaseModel):
+    username: str
+    password: str
+
+
+class UserSetting(BaseModel):
+    auth_jwt_secret_key: str = "secret"
+    auth_jwt_deny_list_enabled: bool = True
+    auth_jwt_token_checks: set = {"logout"}
