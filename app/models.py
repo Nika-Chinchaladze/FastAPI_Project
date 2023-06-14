@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
-from datetime import datetime, timedelta
+from sqlalchemy.sql import func
 
 from .database import Base
 
@@ -31,11 +31,12 @@ class Post(Base):
     description = Column(String, nullable=False)
     price = Column(Float, nullable=False)
     is_active = Column(Boolean, nullable=False, server_default="TRUE")
-    created_at = Column(
-        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
-    )
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now())
     updated_at = Column(
-        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
     )
     author_id = Column(
         Integer, ForeignKey("authors.id", ondelete="CASCADE"), nullable=False
