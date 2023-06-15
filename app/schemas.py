@@ -68,7 +68,6 @@ class BaseComment(BaseModel):
 
 
 class GetComment(BaseComment):
-    id: int
     pass
 
 

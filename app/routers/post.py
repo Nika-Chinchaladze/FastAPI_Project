@@ -5,9 +5,8 @@ from typing import List
 
 from sqlalchemy.orm import Session
 from app import models, schemas, oauth2
-from app.database import engine, get_db
+from app.database import get_db
 
-models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter(prefix="/posts", tags=["Post"])
 
@@ -62,7 +61,7 @@ def create_post(
     return my_post
 
 
-@router.delete("/{id}", response_model=schemas.SendPost)
+@router.delete("/{id}")
 def delete_post(
     id: int,
     db: Session = Depends(get_db),
@@ -71,14 +70,15 @@ def delete_post(
     """delete_post view is responsible for deleting chosen post
     from database, user must be logged in to execute this operation.
     """
-    my_post = db.query(models.Post).filter(models.Post.id == id).first()
+    my_query = db.query(models.Post).filter(models.Post.id == id)
+    my_post = my_query.first()
     # we check if chosen post exists in the database.
     if my_post:
         # we check if chosen post belongs to current user.
         if my_post.author_id == current_user_id:
-            db.delete(my_post)
+            my_query.delete()
             db.commit()
-            return my_post
+            return {"message": f"Post with id {id}, has been deleted!"}
         else:
             # if chosen post doesn't belong to current user, then
             # he/she won't be able to delete it, because we raise

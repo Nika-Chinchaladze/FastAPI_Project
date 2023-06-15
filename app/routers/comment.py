@@ -5,9 +5,8 @@ from typing import List
 
 from sqlalchemy.orm import Session
 from app import models, schemas, oauth2
-from app.database import engine, get_db
+from app.database import get_db
 
-models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter(prefix="/posts", tags=["Comment"])
 

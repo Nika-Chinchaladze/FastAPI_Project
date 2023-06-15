@@ -3,16 +3,19 @@
 from fastapi import status, HTTPException, Depends, APIRouter
 
 from sqlalchemy.orm import Session
-from app import models, schemas
+from app import models, schemas, oauth2
 from app.database import engine, get_db
 
-models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter(tags=["User"])
 
 
 @router.get("/users/{id}", response_model=schemas.SendUser)
-def get_user(id: int, db: Session = Depends(get_db)):
+def get_user(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user_id: int = Depends(oauth2.get_current_user),
+):
     """get_user view is responsible for retrieving user specific information."""
     my_user = db.query(models.Author).filter(models.Author.id == id).first()
     # we check if user exists in the database,
