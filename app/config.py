@@ -8,6 +8,7 @@ class Settings(BaseSettings):
 
     database_url: str
     database_alembic_url: str
+    database_url_test: str
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
