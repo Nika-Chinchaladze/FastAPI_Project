@@ -30,3 +30,4 @@ def test_get_user_view_unauthorized_error(client):
     """
     response = client.get("/users/1")
     assert response.status_code == 401
+    assert response.json().get("detail") == "Not authenticated"

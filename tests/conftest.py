@@ -110,3 +110,13 @@ def test_posts(test_user, session, test_second_user) -> None:
     )
     session.commit()
     return None
+
+
+@pytest.fixture
+def update_data():
+    new_data = {
+        "title": "update title",
+        "description": "update description",
+        "price": 100,
+    }
+    return new_data

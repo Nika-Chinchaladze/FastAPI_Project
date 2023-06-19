@@ -11,7 +11,7 @@ from app.database import get_db
 router = APIRouter(prefix="/posts", tags=["Post"])
 
 
-@router.get("/", response_model=List[schemas.SendPost])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=List[schemas.SendPost])
 def all_post(
     db: Session = Depends(get_db),
     current_user_id: object = Depends(oauth2.get_current_user),
@@ -23,7 +23,7 @@ def all_post(
     return my_posts
 
 
-@router.get("/{id}", response_model=schemas.SendPost)
+@router.get("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.SendPost)
 def one_post(
     id: int,
     db: Session = Depends(get_db),
