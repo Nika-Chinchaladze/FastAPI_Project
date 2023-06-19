@@ -120,3 +120,28 @@ def update_data():
         "price": 100,
     }
     return new_data
+
+
+@pytest.fixture
+def new_comment():
+    data = {"comment": "This comment is from Tommy Shelby!"}
+    return data
+
+
+@pytest.fixture
+def test_comments(test_posts, session) -> None:
+    session.add_all(
+        [
+            models.Comment(
+                comment="First User's - First Comment", author_id=1, post_id=1
+            ),
+            models.Comment(
+                comment="First User's - Second Comment", author_id=1, post_id=1
+            ),
+            models.Comment(
+                comment="Second User's - First Comment", author_id=2, post_id=1
+            ),
+        ]
+    )
+    session.commit()
+    return None

@@ -61,7 +61,18 @@ def test_one_post_view_not_authorized_error(client, test_posts):
 
 @pytest.mark.parametrize(
     "title, description, price",
-    [("new title", "new description", 33.3), ("new title", "new description", "45.5")],
+    [
+        (
+            "new title",
+            "new description",
+            33.3,
+        ),
+        (
+            "new title",
+            "new description",
+            "45.5",
+        ),
+    ],
 )
 def test_create_post_view_authorized_success(
     authorized_client, title, description, price
@@ -83,16 +94,56 @@ def test_create_post_view_authorized_success(
 @pytest.mark.parametrize(
     "title, description, price",
     [
-        ("", "new description", 20),
-        ("new title", "", 20),
-        ("", "", 20),
-        ("new title", "new description", -10),
-        (None, "new description", 20),
-        ("new title", None, 20),
-        ("new title", "new description", None),
-        ("new title", "new description", "string"),
-        (None, None, 20),
-        (None, None, None),
+        (
+            "",
+            "new description",
+            20,
+        ),
+        (
+            "new title",
+            "",
+            20,
+        ),
+        (
+            "",
+            "",
+            20,
+        ),
+        (
+            "new title",
+            "new description",
+            -10,
+        ),
+        (
+            None,
+            "new description",
+            20,
+        ),
+        (
+            "new title",
+            None,
+            20,
+        ),
+        (
+            "new title",
+            "new description",
+            None,
+        ),
+        (
+            "new title",
+            "new description",
+            "string",
+        ),
+        (
+            None,
+            None,
+            20,
+        ),
+        (
+            None,
+            None,
+            None,
+        ),
     ],
 )
 def test_create_post_view_authorized_wrong_data_error(
