@@ -86,7 +86,7 @@ def register(author_credentials: schemas.GetUser, db: Session = Depends(get_db))
         # if user already exists than we raise 208 error with
         # message that user is already registered.
         raise HTTPException(
-            status_code=status.HTTP_208_ALREADY_REPORTED,
+            status_code=status.HTTP_409_CONFLICT,
             detail=f"User with name {my_author.username} - already exists!",
         )
 
