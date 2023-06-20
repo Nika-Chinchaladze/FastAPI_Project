@@ -1,3 +1,8 @@
+"""Module is responsible for creating test database and,
+overriding existing db instance with test_db instance for
+testing purposes and creating pytest fixtures.
+ """
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -8,7 +13,7 @@ from app.main import app
 from app.config import settings
 from app.database import Base, get_db
 from app.oauth2 import create_access_token
-from app import schemas, models
+from app import models
 
 
 SQLALCHEMY_DATABASE_URL = settings.database_url_test
