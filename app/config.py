@@ -6,9 +6,12 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     """class is responsible for getting values of environmental variables."""
 
-    database_url: str
-    database_alembic_url: str
-    database_url_test: str
+    db_hostname: str
+    db_username: str
+    db_password: str
+    db_port: str
+    db_name: str
+    db_name_test: str
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
