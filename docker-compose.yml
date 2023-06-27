@@ -10,23 +10,23 @@ services:
       - ./:/usr/src/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     environment:
-      - DB_HOSTNAME=postgres
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=nadira
-      - DB_PORT=5432
-      - DB_NAME=fastapi_project
-      - DB_NAME_TEST=fastapi_project_test
-      - SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - DB_HOSTNAME=${DB_USERNAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_NAME_TEST=${DB_NAME_TEST}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
 
   postgres:
     image: postgres
     restart: always
     environment:
-      - POSTGRES_PASSWORD=nadira
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=fastapi_project
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - postgres-db:/var/lib/postgresql/data
 
